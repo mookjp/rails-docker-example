@@ -1,0 +1,8 @@
+# Set addr and port from environment variable automatically added by docker-compose.
+# If it is on development environment on local machine, it sees host of boot2docker.
+development: <%= ENV['REDIS_PORT_6379_TCP_ADDR'] ||= ENV['DOCKER_HOST'].split('//')[1].split(':')[0] %>:<%= ENV['REDIS_PORT_6379_TCP_PORT'] ||= '6379' %>
+# TODO: set variables for other environments
+test: localhost:6379
+staging: redis1.se.github.com:6379
+fi: localhost:6379
+production: redis1.ae.github.com:6379
