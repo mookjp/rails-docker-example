@@ -97,6 +97,9 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
+    pry-doc (0.6.0)
+      pry (~> 0.9)
+      yard (~> 0.8)
     pry-rails (0.3.3)
       pry (>= 0.9.10)
     rack (1.6.0)
@@ -177,6 +180,7 @@ GEM
       binding_of_caller (>= 0.7.2)
       railties (>= 4.0)
       sprockets-rails (>= 2.0, < 4.0)
+    yard (0.8.7.6)
 
 PLATFORMS
   ruby
@@ -186,6 +190,7 @@ DEPENDENCIES
   coffee-rails (~> 4.1.0)
   jbuilder (~> 2.0)
   jquery-rails
+  pry-doc
   pry-rails
   rails (= 4.2.0)
   resque (~> 1.25.2)!
