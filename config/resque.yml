@@ -5,4 +5,4 @@ development: <%= ENV['REDIS_PORT_6379_TCP_ADDR'] ||= ENV['DOCKER_HOST'].split('/
 test: localhost:6379
 staging: redis1.se.github.com:6379
 fi: localhost:6379
-production: redis1.ae.github.com:6379
+production: <%= ENV['REDIS_PORT_6379_TCP_ADDR'] %>:<%= ENV['REDIS_PORT_6379_TCP_PORT'] %>

@@ -1,12 +1,19 @@
 web:
-  image: ubuntu:14.04
-  command: /bin/sh -c "while true; do echo hello world; sleep 1; done"
+  build: .
+  #image: ubuntu:14.04
+  #command: /bin/sh -c "while true; do echo hello world; sleep 1; done"
   links:
     - db
     - redis
     - data
-verificaiton:
-  image: ubuntu:14.04
+  ports:
+    - "3000:3000"
+#webresque:
+#  build: ./docker/web-resque
+#  links:
+#    - redis
+#verificaiton:
+#  image: ubuntu:14.04
 db:
   image: postgres
 redis:
