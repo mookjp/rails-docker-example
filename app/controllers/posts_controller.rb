@@ -28,7 +28,6 @@ class PostsController < ApplicationController
 
     respond_to do |format|
       if @post.save
-        binding.pry
         Resque.enqueue(Sleeper, 5)
 
         format.html { redirect_to @post, notice: 'Post was successfully created.' }
