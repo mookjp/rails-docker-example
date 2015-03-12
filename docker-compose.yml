@@ -3,7 +3,7 @@ web:
   #image: ubuntu:14.04
   #command: /bin/sh -c "while true; do echo hello world; sleep 1; done"
   links:
-    - db
+    - postgres
     - redis
     - data
   ports:
@@ -14,8 +14,11 @@ web:
 #    - redis
 #verificaiton:
 #  image: ubuntu:14.04
-db:
+postgres:
   image: postgres
+  environment:
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: password
 redis:
   image: redis
   ports:

@@ -12,6 +12,10 @@ ADD docker/rails/conf/nginx.conf /opt/nginx/conf/nginx.conf
 # Add configuration to set daemon mode off
 RUN echo "daemon off;" >> /opt/nginx/conf/nginx.conf
 
+# Install Rails dependencies
+RUN apt-get update && apt-get install -y nodejs --no-install-recommends && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y mysql-client postgresql-client sqlite3 --no-install-recommends && rm -rf /var/lib/apt/lists/*
+
 # throw errors if Gemfile has been modified since Gemfile.lock
 RUN bundle config --global frozen 1
 
@@ -27,9 +31,6 @@ ADD . /usr/src/app
 # Initialize log
 RUN cat /dev/null > /usr/src/app/log/production.log
 RUN chmod -R a+w /usr/src/app/log
-
-RUN apt-get update && apt-get install -y nodejs --no-install-recommends && rm -rf /var/lib/apt/lists/*
-RUN apt-get update && apt-get install -y mysql-client postgresql-client sqlite3 --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 3000
 

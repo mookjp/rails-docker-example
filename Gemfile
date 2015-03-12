@@ -49,3 +49,7 @@ group :development, :test do
   gem 'pry-doc'
 end
 
+group :production do
+  # postgre is needed for production
+  gem 'pg'
+end
