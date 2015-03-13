@@ -30,7 +30,8 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # gem 'unicorn'
 
 # Use Capistrano for deployment
-# gem 'capistrano-rails', group: :development
+gem 'capistrano', '~> 3.1'
+gem 'capistrano-rails', '~> 1.1'
 
 # For queing
 gem 'resque', '~> 1.25.2', github: 'resque/resque', tag: 'v1.25.2'
