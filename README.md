@@ -116,6 +116,12 @@ git clone git@github.com:your-username/your-repo.git
 
 To deploy the application to droplet, it has capistrano file.
 
+#### Deploy manually
+
+```sh
+DEPLOY_TARGET_HOST=your.host.name bundle exec cap staging docker:deploy
+```
+
 ### Deploy with CircleCI
 
 #### circle.yml
