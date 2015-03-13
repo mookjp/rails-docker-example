@@ -32,7 +32,7 @@ ADD . /usr/src/app
 RUN cat /dev/null > /usr/src/app/log/production.log
 RUN chmod -R a+w /usr/src/app/log
 
-EXPOSE 3000
+EXPOSE 80
 
 ENV RAILS_ENV=production
 
