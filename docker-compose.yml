@@ -5,15 +5,15 @@ web:
   links:
     - postgres
     - redis
-    - data
   ports:
     - "3000:3000"
-#webresque:
-#  build: ./docker/web-resque
-#  links:
-#    - redis
-#verificaiton:
-#  image: ubuntu:14.04
+webresque:
+  image: railsdockerexample_web
+  links:
+    - redis
+  environment:
+    QUEUE: "*"
+  command: /bin/bash -c "bundle exec rake environment resque:work"
 postgres:
   image: postgres
   environment:
@@ -21,7 +21,6 @@ postgres:
     POSTGRES_PASSWORD: password
 redis:
   image: redis
+  # Open port for local development environment
   ports:
-    - 6379:6379
-data:
-  image: busybox
+    - "6379:6379"
