@@ -8,6 +8,9 @@ RUN gem install passenger && \
     passenger-install-nginx-module --auto
 
 ADD docker/rails/conf/nginx.conf /opt/nginx/conf/nginx.conf
+# Add passernger root path file by pasenger-config command
+# https://www.phusionpassenger.com/documentation/Users%20guide%20Nginx.html#inserting_passenger_root_for_apt
+RUN /usr/local/bundle/bin/passenger-config --root > /opt/nginx/conf/passenger-root.ini
 
 # Add configuration to set daemon mode off
 RUN echo "daemon off;" >> /opt/nginx/conf/nginx.conf
