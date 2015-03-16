@@ -55,7 +55,7 @@ docker-compose up
 
 ## Deployment
 
-This is example to deploy these containers to a Ubuntu droplet on
+This is example to deploy these containers to a Ubuntu 14.04 droplet on
 [DigitalOcean](https://www.digitalocean.com/).
 
 ### Set up for DigitalOcean droplet
@@ -121,6 +121,17 @@ To deploy the application to droplet, it has capistrano file.
 ```sh
 DEPLOY_TARGET_HOST=your.host.name bundle exec cap staging docker:deploy
 ```
+
+#### * If you met `exit status 4` while building Docker image
+
+You may meet this error while you build your Docker image:
+
+```
+Your compiler failed with the exit status 4. This probably means that it ran out of memory. To solve this problem, try increasing your swap space: https://www.digitalocean.com/community/articles/how-to-add-swap-on-ubuntu-12-04
+```
+
+You can upgrade space to add swap space following this procedure:
+[How To Add Swap on Ubuntu 14.04 | DigitalOcean](https://www.digitalocean.com/community/tutorials/how-to-add-swap-on-ubuntu-14-04)
 
 ### Deploy with CircleCI
 
