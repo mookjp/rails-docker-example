@@ -25,8 +25,8 @@ namespace :docker do
   task :deploy do
     on roles(:all) do |host|
       execute "cd #{fetch(:repo_path)}; docker-compose -f #{File.join(fetch(:repo_path), 'docker-compose.yml')} stop"
-      execute "cd #{fetch(:repo_path)}; docker-compose -f #{File.join(fetch(:repo_path), 'docker-compose.yml')} rm"
-      execute "cd #{fetch(:repo_path)}; docker-compose -f #{File.join(fetch(:repo_path), 'docker-compose.yml')} up"
+      execute "cd #{fetch(:repo_path)}; docker-compose -f #{File.join(fetch(:repo_path), 'docker-compose.yml')} rm --force"
+      execute "cd #{fetch(:repo_path)}; docker-compose -f #{File.join(fetch(:repo_path), 'docker-compose.yml')} up -d"
     end
   end
 

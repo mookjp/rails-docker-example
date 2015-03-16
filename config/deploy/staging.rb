@@ -21,7 +21,7 @@ server ENV['DEPLOY_TARGET_HOST'], user: 'deploy', roles: %w{web}
 # role :app, %w{deploy@example.com}, my_property: :my_value
 # role :web, %w{user1@primary.com user2@additional.com}, other_property: :other_value
 # role :db,  %w{deploy@example.com}
-role :web,  "deploy@#{fetch(:host)}"
+role :web,  "deploy@#{server ENV['DEPLOY_TARGET_HOST']}"
 
 # Configuration
 # =============
