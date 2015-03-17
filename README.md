@@ -53,6 +53,23 @@ docker-compose up
 
 ## For development environment
 
+For development environment, it uses a container for redis only.
+You can use `rails cosnole` and `SQLite` on your local machine.
+
+If you use MacOSX, install needed packages by `brew`:
+
+```sh
+brew update
+brew install boot2docker docker docker-compose
+```
+
+Then run redis container and Rails server:
+
+```sh
+docker-compose run redis
+bundle exec rails s
+```
+
 ## Deployment
 
 This is example to deploy these containers to a Ubuntu 14.04 droplet on
