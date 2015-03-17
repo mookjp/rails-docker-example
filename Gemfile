@@ -36,6 +36,8 @@ gem 'capistrano-rails', '~> 1.1'
 # For queing
 gem 'resque', '~> 1.25.2', github: 'resque/resque', tag: 'v1.25.2'
 
+gem 'rails_config', '~> 0.4.2'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'

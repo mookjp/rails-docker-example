@@ -1,0 +1,1 @@
+tmp_file_dir: <%= File.join(Rails.root.to_s, 'tmp') %>
