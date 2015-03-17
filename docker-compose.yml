@@ -9,6 +9,8 @@ webresque:
   image: railsdockerexample_web
   links:
     - redis
+  volumes_from:
+    - data
   environment:
     QUEUE: "*"
   command: /bin/bash -c "bundle exec rake environment resque:work"
@@ -22,3 +24,7 @@ redis:
   # Open port for local development environment
   ports:
     - "6379:6379"
+data:
+  image: busybox
+  volumes:
+    - /tmp
