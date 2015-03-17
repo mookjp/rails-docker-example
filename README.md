@@ -145,6 +145,7 @@ DEPLOY_TARGET_HOST=your.host.name bundle exec cap staging docker:deploy
   * Build Docker images
 3. deploy
   * Run Docker containers
+  * This task excutes 3 command of `docker-compose`: stop, rm and up. You don't have to care of containers running as it stops all of runnning containers.
 
 Building images and runnnig containers works by execute `docker-compose`.
 See [docker-compose.yml](https://github.com/mookjp/rails-docker-example/blob/master/docker-compose.yml)
