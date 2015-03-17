@@ -1,7 +1,5 @@
 web:
   build: .
-  #image: ubuntu:14.04
-  #command: /bin/sh -c "while true; do echo hello world; sleep 1; done"
   links:
     - postgres
     - redis
