@@ -114,13 +114,23 @@ git clone git@github.com:your-username/your-repo.git
 
 ### capistrano
 
-To deploy the application to droplet, it has capistrano file.
-
-#### Deploy manually
+To deploy the application to droplet, it has capistrano file. Execute deployment manually by executing this command:
 
 ```sh
 DEPLOY_TARGET_HOST=your.host.name bundle exec cap staging docker:deploy
 ```
+
+`docker.rake` has 3 tasks.
+
+1. update
+  * Update git repository of Rails project
+2. build
+  * Build Docker images
+3. deploy
+  * Run Docker containers
+
+Building images and runnnig containers works by execute `docker-compose`.
+See [docker-compose.yml](https://github.com/mookjp/rails-docker-example/blob/master/docker-compose.yml)
 
 #### * If you met `exit status 4` while building Docker image
 
@@ -132,6 +142,8 @@ Your compiler failed with the exit status 4. This probably means that it ran out
 
 You can upgrade space to add swap space following this procedure:
 [How To Add Swap on Ubuntu 14.04 | DigitalOcean](https://www.digitalocean.com/community/tutorials/how-to-add-swap-on-ubuntu-14-04)
+
+I confirmed that swap 4GB works for this project.
 
 ### Deploy with CircleCI
 
