@@ -33,6 +33,9 @@ The structure of the project is following; quite simple:
     * DB for models of Rails
 * Redis
     * For Resque
+* Data container
+  * data-only-container for persistent data like temporary file and data for DB
+  * This is mounted to containers
 
 ## How to run containers
 
@@ -168,3 +171,25 @@ I confirmed that swap 4GB works for this project.
 #### circle.yml
 
 This project has a sample `circle.yml` to deploy it to DO's droplet.
+
+
+## Manage persistent data
+
+This project uses data-only-container for portability of persistent data, for example, temporary file which is needed by the application, DB data and etc.
+It follows the instruction in Documentation of Docker: [Managing data in containers - Docker Documentation](https://docs.docker.com/userguide/dockervolumes/) and There's nothing new to the documentation.
+
+This project has Resque job, `FileCreator`. This is just to create file when the new post was created. And file is saved in `/tmp` in production; this is sample so it is meaningless!. See  `config/settings/production.yml` and `app/jobs/file_creator.rb`.
+
+Following is the way to backup files which was saved in `/tmp` and restore them.
+
+### Backup data
+
+```sh
+docker run --volumes-from railsdockerexample_data_1 -v $(pwd)/backup:/backup busybox tar cvf /backup/backup.tar /tmp
+```
+
+### Restore data
+
+```sh
+docker run --volumes-from railsdockerexample_data_1 -v $(pwd)/backup:/backup busybox tar xvf /backup/backup.tar
+```
