@@ -182,14 +182,28 @@ This project has Resque job, `FileCreator`. This is just to create file when the
 
 Following is the way to backup files which was saved in `/tmp` and restore them.
 
-### Backup data
+### Backup and restore data
+
+#### Static files in `/tmp` directory
+
+In this case, it just needs to create backup file from container directory and extract it to container.
 
 ```sh
+# Create backup as a tar file
 docker run --volumes-from railsdockerexample_data_1 -v $(pwd)/backup:/backup busybox tar cvf /backup/backup.tar /tmp
+# Restore it
+docker run --volumes-from railsdockerexample_data_1 -v $(pwd)/backup:/backup busybox tar xvf /backup/backup.tar
 ```
 
-### Restore data
+#### DB data
+
+If you need to backup and restore postgres DB data, you can do it by following:
 
 ```sh
+# Create backup as a tar file
+docker run --volumes-from railsdockerexample_data_1 -v $(pwd)/backup:/backup busybox tar cvf /backup/backup.tar /var/lib/postgresql/data
+# Restore it
 docker run --volumes-from railsdockerexample_data_1 -v $(pwd)/backup:/backup busybox tar xvf /backup/backup.tar
+# Restart containers; As restarted container may have new ip address and Rails knows it only to read ENV --- it was set --link option and it will not update automatically
+docker-compose restart
 ```
