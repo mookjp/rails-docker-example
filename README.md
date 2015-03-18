@@ -99,7 +99,7 @@ web:
   ports:
     - "80:80"
   # Following is development configuration
-  command: rails server -b 0.0.0.0 -p 80
+  command: /bin/bash -c "rake db:migrate && rails server -b 0.0.0.0 -p 80"
   environment:
     RAILS_ENV: development
   volumes_from:
