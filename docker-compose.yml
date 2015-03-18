@@ -31,4 +31,4 @@ data:
   volumes:
     - /tmp
     # For postgres
-    - //var/lib/postgresql/data
+    - /var/lib/postgresql/data
