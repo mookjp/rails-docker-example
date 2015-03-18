@@ -1,6 +1,33 @@
 rails-dokcer-example
 ================================================================================
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+## Contents
+
+- [Summary](#summary)
+- [How to run containers](#how-to-run-containers)
+  - [Requirements](#requirements)
+  - [Run containers](#run-containers)
+- [For development environment](#for-development-environment)
+- [Deployment](#deployment)
+  - [Set up for DigitalOcean droplet](#set-up-for-digitalocean-droplet)
+    - [Install Docker and Docker Compose](#install-docker-and-docker-compose)
+    - [Set up deploy user](#set-up-deploy-user)
+    - [Add deploy keys to repo on Github](#add-deploy-keys-to-repo-on-github)
+  - [capistrano](#capistrano)
+    - [* If you met `exit status 4` while building Docker image](#-if-you-met-exit-status-4-while-building-docker-image)
+  - [Deploy with CircleCI](#deploy-with-circleci)
+    - [circle.yml](#circleyml)
+- [Manage persistent data](#manage-persistent-data)
+  - [Backup and restore data](#backup-and-restore-data)
+    - [Static files in `/tmp` directory](#static-files-in-tmp-directory)
+    - [DB data](#db-data)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+## Summary
+
 This repository is a example project by Rails with Resque worker.
 The structure of the project is following; quite simple:
 
@@ -56,21 +83,37 @@ docker-compose up
 
 ## For development environment
 
-For development environment, it uses a container for redis only.
-You can use `rails cosnole` and `SQLite` on your local machine.
+For development environment, you can use `docker-compose-development.yml` on your local machine.
 
-If you use MacOSX, install needed packages by `brew`:
+It is bassically same as `docker-compose.yml` for staging or production environment but it shares your local Rails project with web container with using same image as staging/production.
+When you update code, you can see changes for it as you run `rails server` on your local too.
 
-```sh
-brew update
-brew install boot2docker docker docker-compose
-```
+This is `docker-compose-development.yml`:
 
-Then run redis container and Rails server:
-
-```sh
-docker-compose run redis
-bundle exec rails s
+```yml
+web:
+  build: .
+  links:
+    - postgres
+    - redis
+  ports:
+    - "80:80"
+  # Following is development configuration
+  command: rails server -b 0.0.0.0 -p 80
+  environment:
+    RAILS_ENV: development
+  volumes_from:
+    - data
+# ...
+# omitted some lines...
+# ...
+data:
+  image: busybox
+  volumes:
+    - /tmp
+    # For postgres
+    - /var/lib/postgresql/data
+    - .:/usr/src/app
 ```
 
 ## Deployment
