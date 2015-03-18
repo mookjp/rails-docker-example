@@ -23,7 +23,7 @@ webresque:
     QUEUE: "*"
     # Following is development configuration
     RAILS_ENV: development
-  command: /bin/bash -c "bundle exec rake environment resque:work"
+  command: rake environment resque:work
 postgres:
   image: postgres
   environment:

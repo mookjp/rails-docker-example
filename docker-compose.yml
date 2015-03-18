@@ -13,7 +13,7 @@ webresque:
     - data
   environment:
     QUEUE: "*"
-  command: /bin/bash -c "bundle exec rake environment resque:work"
+  command: rake environment resque:work
 postgres:
   image: postgres
   environment:
