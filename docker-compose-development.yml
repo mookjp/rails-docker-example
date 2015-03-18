@@ -3,7 +3,6 @@
 web:
   build: .
   links:
-    - postgres
     - redis
   ports:
     - "80:80"
@@ -24,13 +23,6 @@ webresque:
     # Following is development configuration
     RAILS_ENV: development
   command: rake environment resque:work
-postgres:
-  image: postgres
-  environment:
-    POSTGRES_USER: postgres
-    POSTGRES_PASSWORD: password
-  volumes_from:
-    - data
 redis:
   image: redis
   # Open port for local development environment
