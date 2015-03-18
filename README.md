@@ -1,4 +1,4 @@
-rails-dokcer-example
+rails-docker-example
 ================================================================================
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
