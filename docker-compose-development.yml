@@ -1,3 +1,5 @@
+# This is docker-compose.yml for local development environment
+# Don't forget `docker-compose build web` to update image if you update Gemfile
 web:
   build: .
   links:
@@ -5,6 +7,12 @@ web:
     - redis
   ports:
     - "80:80"
+  # Following is development configuration
+  command: rails server -b 0.0.0.0 -p 80
+  environment:
+    RAILS_ENV: development
+  volumes_from:
+    - data
 webresque:
   image: railsdockerexample_web
   links:
@@ -13,6 +21,8 @@ webresque:
     - data
   environment:
     QUEUE: "*"
+    # Following is development configuration
+    RAILS_ENV: development
   command: /bin/bash -c "bundle exec rake environment resque:work"
 postgres:
   image: postgres
@@ -23,9 +33,13 @@ postgres:
     - data
 redis:
   image: redis
+  # Open port for local development environment
+  ports:
+    - "6379:6379"
 data:
   image: busybox
   volumes:
     - /tmp
     # For postgres
     - /var/lib/postgresql/data
+    - .:/usr/src/app
