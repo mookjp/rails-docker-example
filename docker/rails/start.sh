@@ -1,4 +1,4 @@
 #!/bin/bash
-export SECRET_KEY_BASE=$(bundle exec rake secret) && \
-    bundle exec rake db:migrate && \
+export SECRET_KEY_BASE=$(rake secret) && \
+    rake db:migrate && \
     /opt/nginx/sbin/nginx

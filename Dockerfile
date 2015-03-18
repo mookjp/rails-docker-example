@@ -24,7 +24,7 @@ WORKDIR /usr/src/app
 
 ADD Gemfile /usr/src/app/
 ADD Gemfile.lock /usr/src/app/
-RUN bundle install
+RUN bundle install --system
 
 ADD . /usr/src/app
 
