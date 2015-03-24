@@ -327,5 +327,6 @@ Install vagrant dns plugin for local dns. Then run `vagrant up` to up your local
 ```sh
 vagrant plugin install vagrant-dns
 vagrant dns --install
+vagrant ssh-config >> ~/.ssh/config
 vagrant up
 ```
