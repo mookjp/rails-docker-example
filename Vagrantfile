@@ -11,7 +11,9 @@ sudo mv ~/docker-compose /opt/bin/docker-compose
 sudo chown root:root /opt/bin/docker-compose
 sudo chmod +x /opt/bin/docker-compose
 docker run -d --net=host -p 80:80 -p 8181:8181 mailgun/vulcand:v0.8.0-beta.2 /go/bin/vulcand -apiInterface="0.0.0.0" -etcd="http://0.0.0.0:4001" -port=80 -apiPort=8181
-cd /home/core/rails-docker-example && docker-compose up
+cd /home/core/rails-docker-example && \
+  docker-compose build && \
+  docker-compose up
 SCRIPT
 
 require 'fileutils'
