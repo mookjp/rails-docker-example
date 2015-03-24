@@ -118,6 +118,8 @@ data:
 
 ## Deployment
 
+**Currently, this examples does not support hot-deployment. This example has deployment task by capistrano but it needs to restart all containers when you want to update applciation.**
+
 This is example to deploy these containers to a Ubuntu 14.04 droplet on
 [DigitalOcean](https://www.digitalocean.com/).
 
