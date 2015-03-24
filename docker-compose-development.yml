@@ -25,7 +25,6 @@ webresque:
   command: rake environment resque:work
 redis:
   image: redis
-  # Open port for local development environment
   ports:
     - "6379:6379"
 data:
