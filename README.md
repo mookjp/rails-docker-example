@@ -252,3 +252,80 @@ docker run --volumes-from railsdockerexample_data_1 -v $(pwd)/backup:/backup bus
 # Restart containers; As restarted container may have new ip address and Rails knows it only to read ENV --- it was set --link option and it will not update automatically
 docker-compose restart
 ```
+
+## TIPS: Zero time deployment with CoreOS and vulcand
+
+We can do zero time deployment by using CoreOS and [mailgun/vulcand](https://github.com/mailgun/vulcand). This project has `Vagrantfile` to up the environment for it.
+
+Ref: [Vulcand を使って Docker コンテナをブルーグリーンデプロイする - Qiita](http://qiita.com/spesnova/items/34d787f6b46761f775a4#upstream-example-v1-%E3%81%AE%E8%A8%AD%E5%AE%9A)
+
+Quite simple to do that. vulcand has the very simple system to handle some endpoints; `Frontend`, `Backend` and `Servers`. In this case, the container is `Server`.
+
+We can build and start container with versioned source code with commit-id then switch endpoint like this:
+
+```sh
+# Create new Backend linked to new version
+etcdctl set /vulcand/backends/8c5a86/backend '{"Type": "http"}'
+
+# Create new Server linked to the Backend
+etcdctl set /vulcand/backends/8c5a86/servers/srv1 '{"URL": "http://localhost:5000"}'
+
+# Update Frontend with new Backend Id
+etcdctl set /vulcand/frontends/f1/frontend '{"Type": "http", "BackendId": "8c5a86", "Route": "PathRegexp(`/.*`)"}'
+```
+
+```
+┌───────────────────────────────────────────────────────────────────┐
+│                             FrontEnd                              │
+│              {"Type": "http", "BackendId": "a43bd2",              │
+│                   "Route": "PathRegexp(`/.*`)"}                   │
+│                                                                   │
+└───────────────────────────────────────────────────────────────────┘
+                                  │
+Frontend forwards request to      │  * Switch the target "Server" by set
+the container which was linked    │  backend Id of commit id via etcd
+to backend                        │  API after the new container was
+                ┌─────────────────┘  built and ready.
+                │
+                │
+                │
+                │
+                ▼
+┌───────────────────────────────┐   ┌───────────────────────────────┐
+│            Backend            │   │            Backend            │
+│   /vulcand/backends/a43bd2    │   │   /vulcand/backends/8c5a86    │
+│       {"Type": "http"}        │   │       {"Type": "http"}        │
+│                               │   │                               │
+└───────────────────────────────┘   └───────────────────────────────┘
+                ┼                                   ┼
+                │                                   │
+                ┼                                   ┼
+┌───────────────────────────────┐   ┌───────────────────────────────┐
+│            Server             │   │            Server             │
+│/vulcand/backends/a43bd2/server│   │/vulcand/backends/8c5a86/server│
+│            s/srv1             │   │            s/srv1             │
+│{"URL": "http://0.0.0.0:8080"} │   │{"URL": "http://0.0.0.0:8081"} │
+└───────────────────────────────┘   └───────────────────────────────┘
+                ┼                                   ┼
+                │                                   │
+                ┼                                   ┼
+┌───────────────────────────────┐   ┌───────────────────────────────┐
+│       Docker container        │   │       Docker container        │
+│       (built as a43bd2)       │   │       (built as 8c5a86)       │
+│         0.0.0.0:8080          │   │         0.0.0.0:8081          │
+│                               │   │                               │
+└───────────────────────────────┘   └───────────────────────────────┘
+```
+
+
+### Setup environment as Vagrant
+
+Install vagrant dns plugin for local dns. Then run `vagrant up` to up your local environment.
+
+**This plugin supports MacOS only**
+
+```sh
+vagrant plugin install vagrant-dns
+vagrant dns --install
+vagrant up
+```
