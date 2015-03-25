@@ -4,7 +4,7 @@ web:
     - postgres
     - redis
   ports:
-    - "80:80"
+    - "80"
 webresque:
   image: railsdockerexample_web
   links:
@@ -14,18 +14,18 @@ webresque:
   environment:
     QUEUE: "*"
   command: rake environment resque:work
-postgres:
-  image: postgres
-  environment:
-    POSTGRES_USER: postgres
-    POSTGRES_PASSWORD: password
-  volumes_from:
-    - data
-redis:
-  image: redis
-data:
-  image: busybox
-  volumes:
-    - /tmp
-    # For postgres
-    - /var/lib/postgresql/data
+#postgres:
+#  image: postgres
+#  environment:
+#    POSTGRES_USER: postgres
+#    POSTGRES_PASSWORD: password
+#  volumes_from:
+#    - data
+#redis:
+#  image: redis
+#data:
+#  image: busybox
+#  volumes:
+#    - /tmp
+#    # For postgres
+#    - /var/lib/postgresql/data

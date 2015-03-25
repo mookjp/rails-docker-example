@@ -10,9 +10,8 @@ set :branch, `git rev-parse origin/master`.chomp
 
 # Default deploy_to directory is /var/www/my_app_name
 # set :deploy_to, '/var/www/my_app_name'
-set :deploy_to, '/home/deploy/src'
 
-set :repo_path, File.join(fetch(:deploy_to), fetch(:application))
+set :repo_path, -> { File.join(fetch(:deploy_to), fetch(:application)) }
 
 # Default value for :scm is :git
 # set :scm, :git
@@ -38,7 +37,15 @@ set :repo_path, File.join(fetch(:deploy_to), fetch(:application))
 # Default value for keep_releases is 5
 # set :keep_releases, 5
 
-namespace :deploy do
+namespace :deploy do |ns|
+#  require 'pp'
+#  ns.tasks.each do |t|
+#    pp t
+#    t.clear_actions
+#    t.enhance do
+#      pp "Override #{t}"
+#    end
+#  end
 
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
@@ -48,5 +55,4 @@ namespace :deploy do
       # end
     end
   end
-
 end
