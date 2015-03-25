@@ -23,6 +23,8 @@ rails-docker-example
   - [Backup and restore data](#backup-and-restore-data)
     - [Static files in `/tmp` directory](#static-files-in-tmp-directory)
     - [DB data](#db-data)
+- [TIPS: Zero time deployment with CoreOS and vulcand](#tips-zero-time-deployment-with-coreos-and-vulcand)
+  - [Setup environment as Vagrant](#setup-environment-as-vagrant)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
