@@ -27,59 +27,52 @@ namespace :docker do
     on roles(:all) do |host|
       invoke "docker:update"
       invoke "docker:build"
-      invoke "docker:create_containers"
       invoke "docker:run_shared_containers"
       invoke "docker:run_app_containers"
-    end
-  end
-
-  desc "Create containers"
-  task :create_containers do
-    on roles(:all) do |host|
-      execute "docker create --name data \
-                -v /tmp -v /var/lib/postgresql/data busybox"
-      execute "docker create --name postgres \
-        --env 'POSTGRES_USER=postgres' \
-        --env 'POSTGRES_PASSWORD=password' \
-        --volumes-from data \
-        postgres"
-      execute 'docker create --name redis redis'
+      invoke "docker:register_new_server"
     end
   end
 
   desc 'Run shared containers; postgres, redis and data-container'
   task :run_shared_containers do
     on roles(:all) do |host|
-      execute 'docker start data'
-      execute 'docker start postgres'
-      execute 'docker start redis'
+      execute "/opt/bin/docker-compose -p #{fetch(:project)} -f #{fetch(:compose_file_path)} up -d"
     end
   end
 
   desc 'Build and run web and resque containers'
   task :run_app_containers do
     on roles(:all) do |host|
-      execute "docker run --name web_`git rev-parse #{fetch(:branch)}` \
-                --link postgres:postgres \
-                --link redis:redis \
-                -P \
-                #{fetch(:branch)}"
-      execute "docker run --name resque_`git rev-parse #{fetch(:branch)}` \
-                --link redis:redis \
-                --volumes-from data \
-                --env 'QUEUE=*' \
-                #{fetch(:branch)} rake environment resque:work"
+      # Run docker container named like railsdockerexample_web_428ba3
+      execute "docker run -d \
+        --name #{fetch(:project)}_web_`git -C #{fetch(:repo_path)} rev-parse #{fetch(:branch)}` \
+        --link #{fetch(:project)}_postgres_1:postgres \
+        --link #{fetch(:project)}_redis_1:redis \
+        -P \
+        #{fetch(:branch)}"
+      # Run docker container named like railsdockerexample_resque_428ba3
+      execute "docker run -d \
+        --name #{fetch(:project)}_resque_`git -C #{fetch(:repo_path)} rev-parse #{fetch(:branch)}` \
+        --link #{fetch(:project)}_redis_1:redis \
+        --volumes-from #{fetch(:project)}_data_1 \
+        --env 'QUEUE=*' \
+        #{fetch(:branch)} rake environment resque:work"
     end
   end
 
-  desc 'Restart all containers'
-  task :restart do
-    execute "docker rm -f $(docker ps -q)"
-    execute "docker run -d --net=host -p 80:80 -p 8181:8181 \
-      mailgun/vulcand:v0.8.0-beta.2 \
-      /go/bin/vulcand -apiInterface='0.0.0.0' -etcd='http://0.0.0.0:4001' -port=80 -apiPort=8181"
-    invoke "docker:run_shared_containers"
-    invoke "docker:run_app_containers"
+  desc 'Register the latest container as Server to be handled by vulcand'
+  task :register_new_server do
+    on roles(:all) do |host|
+      commit_id = capture("git -C #{fetch(:repo_path)} rev-parse origin/master")
+      info "commit id is #{commit_id}"
+      # Get address of new container like "0.0.0.0:49154"
+      inspected_address = capture("docker port #{fetch(:project)}_web_`git -C #{fetch(:repo_path)} rev-parse origin/master`").split('->').last.strip.chomp
+      info "address is #{inspected_address}"
+      execute "etcdctl set /vulcand/backends/#{commit_id}/backend '{\"Type\": \"http\"}'"
+      execute "etcdctl set /vulcand/backends/#{commit_id}/servers/srv1 '{\"URL\": \"http://#{inspected_address}\"}'"
+      # TODO: Register Backend after the container is ready
+      execute "etcdctl set /vulcand/frontends/f1/frontend '{\"Type\": \"http\", \"BackendId\":\"#{commit_id}\",\"Route\": \"PathRegexp(`/.*`)\"}'"
+    end
   end
 
   before :deploy, :update

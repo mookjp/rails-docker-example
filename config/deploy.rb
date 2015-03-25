@@ -2,6 +2,7 @@
 lock '3.4.0'
 
 set :application, 'rails-docker-example'
+set :project, 'railsdockerexample'
 set :repo_url, 'git@github.com:mookjp/rails-docker-example.git'
 
 # Default branch is :master
@@ -12,6 +13,7 @@ set :branch, `git rev-parse origin/master`.chomp
 # set :deploy_to, '/var/www/my_app_name'
 
 set :repo_path, -> { File.join(fetch(:deploy_to), fetch(:application)) }
+set :compose_file_path, -> { File.join(fetch(:repo_path), 'docker-compose.yml') }
 
 # Default value for :scm is :git
 # set :scm, :git
