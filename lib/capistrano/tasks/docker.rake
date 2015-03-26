@@ -102,7 +102,7 @@ namespace :docker do
       end
 
       # Register new container to Frontend
-      execute "etcdctl set /vulcand/frontends/f1/frontend '{\"Type\": \"http\", \"BackendId\":\"#{commit_id}\",\"Route\": \"PathRegexp(`/.*`)\"}'"
+      execute "etcdctl set /vulcand/frontends/f1/frontend '{\"Type\": \"http\", \"BackendId\":\"#{commit_hash}\",\"Route\": \"PathRegexp(`/.*`)\"}'"
     end
   end
 end
