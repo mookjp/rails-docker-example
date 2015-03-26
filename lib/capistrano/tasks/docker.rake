@@ -101,8 +101,23 @@ namespace :docker do
         sleep 1
       end
 
+      # Get old containers' commit hash
+      old_commit_hash = nil
+      begin
+        old_commit_hash = JSON(capture("etcdctl get /vulcand/frontends/f1/frontend")).parse['BackendId']
+        info "old containers' commit hash is #{old_commit_hash}"
+      rescue
+        info "there's no old containers."
+      end
+
       # Register new container to Frontend
       execute "etcdctl set /vulcand/frontends/f1/frontend '{\"Type\": \"http\", \"BackendId\":\"#{commit_hash}\",\"Route\": \"PathRegexp(`/.*`)\"}'"
+
+      # Remove old containers if it exists
+      if old_commit_hash != nil
+        execute "docker rm -f #{fetch(:project)}_web_#{old_commit_hash}"
+        execute "docker rm -f #{fetch(:project)}_resque_#{old_commit_hash}"
+      end
     end
   end
 end
