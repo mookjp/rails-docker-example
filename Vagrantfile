@@ -2,12 +2,13 @@
 # # vi: set ft=ruby :
 
 # provisioning script
+# TODO: split it as .sh file
 $script = <<SCRIPT
 mv /tmp/vagrantfile-user-data /var/lib/coreos-vagrant/
 
 # Create source dir
 sudo mkdir -p /opt/src
-sudo chown root:root /opt/src
+sudo chown core:core /opt/src
 
 # Install docker compose
 curl -L https://github.com/docker/compose/releases/download/1.1.0/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
