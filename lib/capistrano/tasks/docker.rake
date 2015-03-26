@@ -27,7 +27,6 @@ namespace :docker do
     on roles(:all) do |host|
       invoke "docker:update"
       invoke "docker:build"
-      invoke "docker:run_shared_containers"
       invoke "docker:run_app_containers"
       invoke "docker:register_new_server"
     end
