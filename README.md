@@ -319,14 +319,6 @@ to backend                        │  API after the new container was
 └───────────────────────────────┘   └───────────────────────────────┘
 ```
 
-All needed tasks are already included in [rails-docker-example/docker.rake at master · mookjp/rails-docker-example](https://github.com/mookjp/rails-docker-example/blob/master/lib%2Fcapistrano%2Ftasks%2Fdocker.rake).
-You can deploy new containers with zero time deployment with Vagrant:
-
-```sh
-vagrant up
-bundle exec cap local docker:deploy # `local` environment is for vagrant
-```
-
 ### Setup environment as Vagrant
 
 Install vagrant dns plugin for local dns. Then run `vagrant up` to up your local environment.
@@ -338,4 +330,14 @@ vagrant plugin install vagrant-dns
 vagrant dns --install
 vagrant ssh-config >> ~/.ssh/config
 vagrant up
+```
+
+### See how it works to deploy it to Vagrant
+
+All needed tasks are already included in [rails-docker-example/docker.rake at master · mookjp/rails-docker-example](https://github.com/mookjp/rails-docker-example/blob/master/lib%2Fcapistrano%2Ftasks%2Fdocker.rake).
+You can deploy new containers with zero time deployment with Vagrant:
+
+```sh
+vagrant up
+bundle exec cap local docker:deploy # `local` environment is for vagrant
 ```
