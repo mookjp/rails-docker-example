@@ -32,10 +32,10 @@ namespace :docker do
     end
   end
 
-  desc 'Run shared containers; postgres, redis and data-container'
+  desc 'Run shared containers: postgres, redis and data-container; this should be run if shared container is not running'
   task :run_shared_containers do
     on roles(:all) do |host|
-      # TODO: Add conditions whether run containers or not; check container is running or not
+      invoke "docker:update"
       execute "/opt/bin/docker-compose -p #{fetch(:project)} -f #{fetch(:compose_file_path)} up -d"
     end
   end
