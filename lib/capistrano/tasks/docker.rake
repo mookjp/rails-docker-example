@@ -83,17 +83,17 @@ namespace :docker do
   desc 'Register the latest container as Server to be handled by vulcand'
   task :register_new_server do
     on roles(:all) do |host|
-      commit_id = capture("git -C #{fetch(:repo_path)} rev-parse origin/master")
-      info "commit id is #{commit_id}"
+      commit_hash = capture("git -C #{fetch(:repo_path)} rev-parse origin/master")
+      info "new containers' commit hash is #{commit_hash}"
 
       # Get address of new container like "0.0.0.0:49154"
-      inspected_address = capture("docker port #{fetch(:project)}_web_`git -C #{fetch(:repo_path)} rev-parse origin/master`").split('->').last.strip.chomp
+      inspected_address = capture("docker port #{fetch(:project)}_web_#{commit_hash}").split('->').last.strip.chomp
       info "address is #{inspected_address}"
 
       # Register address of container as Server
-      execute "etcdctl set /vulcand/backends/#{commit_id}/backend '{\"Type\": \"http\"}'"
+      execute "etcdctl set /vulcand/backends/#{commit_hash}/backend '{\"Type\": \"http\"}'"
       # TODO: Get containers shared network address or get address dynamically
-      execute "etcdctl set /vulcand/backends/#{commit_id}/servers/srv1 '{\"URL\": \"http://10.1.42.1:#{inspected_address.split(':').last}\"}'"
+      execute "etcdctl set /vulcand/backends/#{commit_hash}/servers/srv1 '{\"URL\": \"http://10.1.42.1:#{inspected_address.split(':').last}\"}'"
 
       # Get HTTP status code of container and wait until the container is ready
       while capture("curl -LI http://#{inspected_address} -o /dev/null -w '%{http_code}' -s | cat") == '000'
