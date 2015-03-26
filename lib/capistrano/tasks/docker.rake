@@ -77,9 +77,8 @@ namespace :docker do
       execute "etcdctl set /vulcand/backends/#{commit_id}/servers/srv1 '{\"URL\": \"http://10.1.42.1:#{inspected_address.split(':').last}\"}'"
 
       # Get HTTP status code of container and wait until the container is ready
-      status = capture("curl -LI http://#{inspected_address} -o /dev/null -w '%{http_code}\n' -s").strip.chomp
-      while status == '000'
-        info "status of container: #{status}"
+      while capture("curl -LI http://#{inspected_address} -o /dev/null -w '%{http_code}' -s | cat") == '000'
+        info 'status code is 000. the container is not ready and continue to retry....'
         sleep 1
       end
 
