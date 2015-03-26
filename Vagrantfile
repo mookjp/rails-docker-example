@@ -18,7 +18,7 @@ sudo chown root:root /opt/bin/docker-compose
 sudo chmod +x /opt/bin/docker-compose
 
 # Run vulcand
-docker run -d --name vulcand --net=host -p 80:80 -p 8181:8181 mailgun/vulcand:v0.7.0 /go/bin/vulcand -apiInterface="0.0.0.0" -etcd="http://0.0.0.0:4001" -port=80 -apiPort=8181
+docker run -d --name vulcand -p 80:8181 -p 8182:8182 mailgun/vulcand:v0.8.0-beta.2 /go/bin/vulcand -apiInterface=0.0.0.0 --etcd=http://10.1.42.1:4001
 SCRIPT
 
 require 'fileutils'
