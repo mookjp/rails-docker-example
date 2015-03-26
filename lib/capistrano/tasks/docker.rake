@@ -105,7 +105,4 @@ namespace :docker do
       execute "etcdctl set /vulcand/frontends/f1/frontend '{\"Type\": \"http\", \"BackendId\":\"#{commit_id}\",\"Route\": \"PathRegexp(`/.*`)\"}'"
     end
   end
-
-  before :deploy, :update
-  before :deploy, :build
 end
