@@ -36,6 +36,7 @@ namespace :docker do
   desc 'Run shared containers; postgres, redis and data-container'
   task :run_shared_containers do
     on roles(:all) do |host|
+      # TODO: Add conditions whether run containers or not; check container is running or not
       execute "/opt/bin/docker-compose -p #{fetch(:project)} -f #{fetch(:compose_file_path)} up -d"
     end
   end
@@ -72,7 +73,8 @@ namespace :docker do
 
       # Register address of container as Server
       execute "etcdctl set /vulcand/backends/#{commit_id}/backend '{\"Type\": \"http\"}'"
-      execute "etcdctl set /vulcand/backends/#{commit_id}/servers/srv1 '{\"URL\": \"http://#{inspected_address}\"}'"
+      # TODO: Get containers shared network address or get address dynamically
+      execute "etcdctl set /vulcand/backends/#{commit_id}/servers/srv1 '{\"URL\": \"http://10.1.42.1:#{inspected_address.split(':').last}\"}'"
 
       # Get HTTP status code of container and wait until the container is ready
       status = capture("curl -LI http://#{inspected_address} -o /dev/null -w '%{http_code}\n' -s").strip.chomp
