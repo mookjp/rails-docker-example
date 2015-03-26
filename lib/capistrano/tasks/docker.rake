@@ -43,16 +43,36 @@ namespace :docker do
   desc 'Build and run web and resque containers'
   task :run_app_containers do
     on roles(:all) do |host|
-      # Run docker container named like railsdockerexample_web_428ba3
-      execute "docker run -d \
-        --name #{fetch(:project)}_web_`git -C #{fetch(:repo_path)} rev-parse #{fetch(:branch)}` \
-        --link #{fetch(:project)}_postgres_1:postgres \
-        --link #{fetch(:project)}_redis_1:redis \
-        -P \
-        #{fetch(:branch)}"
-      # Run docker container named like railsdockerexample_resque_428ba3
-      execute "docker run -d \
-        --name #{fetch(:project)}_resque_`git -C #{fetch(:repo_path)} rev-parse #{fetch(:branch)}` \
+      git_commit_id = capture("git -C #{fetch(:repo_path)} rev-parse #{fetch(:branch)}").chomp
+
+      # Run container only if it does not exists
+      # If the specified container doesn't exists, `docker inspect` exit with error code
+      web_container_name = "#{fetch(:project)}_web_#{git_commit_id}"
+      begin
+        execute "docker inspect #{web_container_name}"
+        info "`#{web_container_name}` exists."
+      rescue
+        info "run `#{web_container_name}` ..."
+        # Run docker container named like railsdockerexample_web_428ba3
+        execute "docker run -d \
+            --name #{web_container_name} \
+            --link #{fetch(:project)}_postgres_1:postgres \
+            --link #{fetch(:project)}_redis_1:redis \
+            -P \
+                #{fetch(:branch)}"
+      end
+
+      # Run container only if it does not exists
+      # If the specified container doesn't exists, `docker inspect` exit with error code
+      resque_container_name = "#{fetch(:project)}_resque_#{git_commit_id}"
+      begin
+        execute "docker inspect #{resque_container_name}"
+        info "`#{resque_container_name}` exists."
+      rescue
+        info "run `#{resque_container_name}` ..."
+        # Run docker container named like railsdockerexample_resque_428ba3
+        execute "docker run -d \
+        --name #{resque_container_name} \
         --link #{fetch(:project)}_redis_1:redis \
         --volumes-from #{fetch(:project)}_data_1 \
         --env 'QUEUE=*' \
