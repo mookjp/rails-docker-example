@@ -123,4 +123,19 @@ namespace :docker do
       end
     end
   end
+
+  desc 'Remove images which is not tagged'
+  task :remove_useless_images do
+    on roles(:all) do |host|
+      execute "docker rmi $(docker images -f 'dangling=true' -q)"
+    end
+  end
+
+  desc 'Remove all containers then remove all images'
+  task :remove_all_images do
+    on roles(:all) do |host|
+      execute 'docker rm -f $(docker ps -a -q)'
+      execute 'docker rmi $(docker images -a -q)'
+    end
+  end
 end
