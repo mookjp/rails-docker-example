@@ -360,3 +360,8 @@ As I mentioned above, `docker:deploy` will do:
 4. Wait container is ready
 5. Switch `Frontend` configuration to forward to new container
 6. Remove old container
+
+
+## Problems and TODOs
+
+### For production
