@@ -319,6 +319,8 @@ to backend                        │  API after the new container was
 └───────────────────────────────┘   └───────────────────────────────┘
 ```
 
+**NOTICE: This wouldn't fit production environment as it builds Docker image inside the only host. It may affects performance while users send request to the only host. For production, it needs to change to use Docker registry and run containers by pulling image from there.**
+
 ### Setup environment as Vagrant
 
 Install vagrant dns plugin for local dns. Then run `vagrant up` to up your local environment.
