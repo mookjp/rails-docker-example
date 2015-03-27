@@ -332,6 +332,9 @@ vagrant plugin install vagrant-dns
 vagrant dns --install
 vagrant ssh-config >> ~/.ssh/config
 vagrant up
+# After vagrant is ready, deploy with capistrano task
+bundle exec cap local docker:deploy
+# The default address of Vagrant environment is http://172.17.8.101/
 ```
 
 ### See how it works to deploy it to Vagrant
