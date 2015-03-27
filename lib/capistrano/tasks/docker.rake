@@ -1,3 +1,5 @@
+require 'json'
+
 namespace :docker do
   desc 'Update repo and reset to :branch'
   task :update do
@@ -105,7 +107,7 @@ namespace :docker do
         # Get old containers' commit hash
         old_commit_hash = nil
         begin
-          old_commit_hash = JSON(capture("etcdctl get /vulcand/frontends/f1/frontend")).parse['BackendId']
+          old_commit_hash = JSON(capture("etcdctl get /vulcand/frontends/f1/frontend"))['BackendId']
           info "old containers' commit hash is #{old_commit_hash}"
         rescue
           info "there's no old containers."
