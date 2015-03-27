@@ -19,8 +19,10 @@ sudo mv ~/docker-compose /opt/bin/docker-compose
 sudo chown root:root /opt/bin/docker-compose
 sudo chmod +x /opt/bin/docker-compose
 
+# Run etcd
+docker run -d --name etcd -p 4441:4001 -p 7771:7001 microbox/etcd:0.4.6 etcd
 # Run vulcand
-docker run -d --name vulcand -p 80:8181 -p 8182:8182 mailgun/vulcand:v0.8.0-beta.2 /go/bin/vulcand -apiInterface=0.0.0.0 --etcd=http://10.1.42.1:4001
+docker run -d --name vulcand -p 80:8181 -p 8182:8182 mailgun/vulcand:v0.8.0-beta.2 /go/bin/vulcand -apiInterface=0.0.0.0 --etcd=http://10.1.42.1:4441
 # Run this only local environment
 docker-compose -p rails-docker-example -f "#{SYNCED_DIR_PATH}"/docker-compose.yml up -d
 SCRIPT

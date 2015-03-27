@@ -94,9 +94,13 @@ namespace :docker do
       info "address is #{inspected_address}"
 
       # Register address of container as Server
-      execute "etcdctl set /vulcand/backends/#{commit_hash}/backend '{\"Type\": \"http\"}'"
+      #execute "etcdctl set /vulcand/backends/#{commit_hash}/backend '{\"Type\": \"http\"}'"
+      execute "curl -s -L 'http://0.0.0.0:4441/v2/keys/vulcand/backends/#{commit_hash}/backend' \
+        -XPUT -d value='{\"Type\": \"http\"}'"
       # TODO: Get containers shared network address or get address dynamically
-      execute "etcdctl set /vulcand/backends/#{commit_hash}/servers/srv1 '{\"URL\": \"http://10.1.42.1:#{inspected_address.split(':').last}\"}'"
+      #execute "etcdctl set /vulcand/backends/#{commit_hash}/servers/srv1 '{\"URL\": \"http://10.1.42.1:#{inspected_address.split(':').last}\"}'"
+      execute "curl -s -L 'http://0.0.0.0:4441/v2/keys/vulcand/backends/#{commit_hash}/servers/srv1' \
+        -XPUT -d value='{\"URL\": \"http://10.1.42.1:#{inspected_address.split(':').last}\"}'"
 
       # Get HTTP status code of container and wait until the container is ready
       while capture("curl -LI http://#{inspected_address} -o /dev/null -w '%{http_code}' -s | cat") == '000'
@@ -107,14 +111,18 @@ namespace :docker do
       # Get old containers' commit hash
       old_commit_hash = nil
       begin
-        old_commit_hash = JSON(capture("etcdctl get /vulcand/frontends/f1/frontend"))['BackendId']
+        #old_commit_hash = JSON(capture("etcdctl get /vulcand/frontends/f1/frontend"))['BackendId']
+        old_commit_hash =
+            JSON(capture("curl -s 'http://0.0.0.0:4441/v2/keys/vulcand/frontends/f1/frontend'"))['BackendId']
         info "old containers' commit hash is #{old_commit_hash}"
       rescue
         info "there's no old containers."
       end
 
       # Register new container to Frontend
-      execute "etcdctl set /vulcand/frontends/f1/frontend '{\"Type\": \"http\", \"BackendId\":\"#{commit_hash}\",\"Route\": \"PathRegexp(`/.*`)\"}'"
+      #execute "etcdctl set /vulcand/frontends/f1/frontend '{\"Type\": \"http\", \"BackendId\":\"#{commit_hash}\",\"Route\": \"PathRegexp(`/.*`)\"}'"
+      execute "curl -s -L 'http://0.0.0.0:4441/v2/keys/vulcand/frontends/f1/frontend' \
+        -XPUT -d value='{\"Type\": \"http\", \"BackendId\":\"#{commit_hash}\",\"Route\": \"PathRegexp(`/.*`)\"}'"
 
       # Remove old containers if it exists
       if old_commit_hash != nil
