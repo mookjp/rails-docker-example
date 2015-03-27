@@ -333,16 +333,30 @@ vagrant dns --install
 vagrant ssh-config >> ~/.ssh/config
 vagrant up
 # After vagrant is ready, deploy with capistrano task
-bundle exec cap local docker:deploy
+bundle exec cap local docker:deploy # `local` environment is for vagrant
 # The default address of Vagrant environment is http://172.17.8.101/
 ```
 
 ### See how it works to deploy it to Vagrant
 
-All needed tasks are already included in [rails-docker-example/docker.rake at master · mookjp/rails-docker-example](https://github.com/mookjp/rails-docker-example/blob/master/lib%2Fcapistrano%2Ftasks%2Fdocker.rake).
+All needed tasks are already included in [lib/capistrano/tasks/docker.rake](https://github.com/mookjp/rails-docker-example/blob/master/lib%2Fcapistrano%2Ftasks%2Fdocker.rake).
+Before testing zero-time-deployment, fix `:repo_url`; URL of repository in [config/deploy/local.rb#L12](https://github.com/mookjp/rails-docker-example/blob/master/config%2Fdeploy%2Flocal.rb#L12).
+
 You can deploy new containers with zero time deployment with Vagrant:
 
 ```sh
-vagrant up
+# Edit your code
+git add your/change
+git commit
+git push your-remote master
 bundle exec cap local docker:deploy # `local` environment is for vagrant
 ```
+
+As I mentioned above, `docker:deploy` will do:
+
+1. Build new image if code was updated
+2. Run new container
+3. Add new `Backend` and `Server` for new container
+4. Wait container is ready
+5. Switch `Frontend` configuration to forward to new container
+6. Remove old container
