@@ -79,6 +79,7 @@ namespace :docker do
                 #{fetch(:branch)} rake environment resque:work"
       end
     end
+  end
 
     desc 'Register the latest container as Server to be handled by vulcand'
     task :register_new_server do
@@ -120,5 +121,4 @@ namespace :docker do
         end
       end
     end
-  end
 end
