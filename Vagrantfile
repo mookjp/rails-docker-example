@@ -8,6 +8,9 @@ SYNCED_DIR_PATH = '/home/core/rails-docker-example'
 $script = <<SCRIPT
 mv /tmp/vagrantfile-user-data /var/lib/coreos-vagrant/
 
+# Add cron script to create backup for data-only-container
+sudo cp #{SYNCED_DIR_PATH}/provisioning/backup-data-container.sh /etc/cron.hourly/
+
 # Create source dir
 sudo mkdir -p /opt/src
 sudo chown core:core /opt/src
