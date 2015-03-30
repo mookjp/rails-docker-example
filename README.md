@@ -255,6 +255,20 @@ docker run --volumes-from railsdockerexample_data_1 -v $(pwd)/backup:/backup bus
 docker-compose restart
 ```
 
+#### Using cron to create backup
+
+backup script `provisioning/backup-data-container.sh` is added to `/etc/cron.hourly/backup-data-container.sh`. Below is the script for backup data.
+
+```sh
+#!/bin/sh -x
+
+echo "Start to create backup for DB..."
+docker run --volumes-from railsdockerexample_data_1 -v /backup/db:/backup busybox tar cvf /backup/db_$(date +%Y%m%d%H%M).tar /var/lib/postgresql/data
+
+echo "Start to create backup for /tmp ..."
+docker run --volumes-from railsdockerexample_data_1 -v /backup/tmp:/backup busybox tar cvf /backup/tmp_$(date +%Y%m%d%H%M).tar /tmp
+```
+
 ## TIPS: Zero time deployment with CoreOS and vulcand
 
 We can do zero time deployment by using CoreOS and [mailgun/vulcand](https://github.com/mailgun/vulcand). This project has `Vagrantfile` to up the environment for it.
@@ -361,6 +375,17 @@ As I mentioned above, `docker:deploy` will do:
 5. Switch `Frontend` configuration to forward to new container
 6. Remove old container
 
+
+## TIPS: Remove Docker images when disk space is low
+
+If you want to remove Docker images as disk space is low, you can use capistrano tasks to do that.
+
+There're 2 tasks for that:
+
+```
+cap docker:remove_all_images       # Remove all containers then remove all images
+cap docker:remove_useless_images   # Remove images which is not tagged
+```
 
 ## Problems and TODOs
 
