@@ -23,8 +23,13 @@ rails-docker-example
   - [Backup and restore data](#backup-and-restore-data)
     - [Static files in `/tmp` directory](#static-files-in-tmp-directory)
     - [DB data](#db-data)
+    - [Using cron to create backup](#using-cron-to-create-backup)
 - [TIPS: Zero time deployment with CoreOS and vulcand](#tips-zero-time-deployment-with-coreos-and-vulcand)
   - [Setup environment as Vagrant](#setup-environment-as-vagrant)
+  - [See how it works to deploy it to Vagrant](#see-how-it-works-to-deploy-it-to-vagrant)
+- [TIPS: Remove Docker images when disk space is low](#tips-remove-docker-images-when-disk-space-is-low)
+- [Problems and TODOs](#problems-and-todos)
+  - [For production](#for-production)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -34,24 +39,32 @@ This repository is a example project by Rails with Resque worker.
 The structure of the project is following; quite simple:
 
 ```
-                 ███████████████████         ███████████████████  
-                 ███████████████████         ███████████████████  
-                 ███████Redis███████         ██████Postgre██████  
-                 ███████████████████         ███████████████████  
-                 ███████████████████         ███████████████████  
-                       ┼  ▲                           ▲
-                       │  │                           │
-     Load    ┌─────────┘  │                           │
- information │            │                ┌─────────────────────┐
-   for job   │            │                │        Rails        │
-            ╱│╲           │                │   Web application   │
-    ┌─────────────────┐   │                │                     │
-    │                 │   │                │   ┌──────────────┐  │
-    │  Rescue worker  │   │ Register jobs  │   │              │  │
-    │                 │   └────────────────┼───│ Resque Task  │  │
-    │                 │                    │   │              │  │
-    └─────────────────┘                    │   └──────────────┘  │
-                                           └─────────────────────┘
+forward requests
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃                                   ┃                    docker-linked
+┣───────────────────┐               ┣────────────┬────────────┬────────────┬────────────┐
+┃     save config   │               ┃            │            │            │            │
+┃                   ▼               ▼            │            │            │            │
+┌───────────────────────┐ ┌──────────┐    ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐
+│        vulcand        │ │          │    │          │ │          │ │          │ │          │ │          │
+│  proxy for requests   │ │   etcd   │    │   web    │ │  resque  │ │  redis   │ │ postgre  │ │   data   │
+│      0.0.0.0:80       │ │          │    │          │ │          │ │          │ │          │ │          │
+│                       │ │          │    │          │ │          │ │          │ │          │ │          │
+└───────────────────────┘ └──────────┘    └──────────┘ └──────────┘ └──────────┘ └──────────┘ └──────────┘
+▲
+│                             ┌──────────┐ ┌──────────┐
+│                             │..........│ │..........│
+│                             │...web....│ │..resque..│
+│                             │..........│ │..........│
+│ GET /posts/                 │..........│ │..........│
+│                             └──────────┘ └──────────┘
+│
+│                                   old containers
+████████████████
+█████client█████
+████████████████
+████████████████                                                                                      
 ```
 
 * Rails
