@@ -1,5 +1,5 @@
-server 'core-01',
-  user: 'core',
+server '192.168.100.100',
+  user: 'deploy',
   roles: %w{web},
   ssh_options: {
     user: 'user_name', # overrides user setting above

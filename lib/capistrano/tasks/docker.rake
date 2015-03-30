@@ -38,7 +38,7 @@ namespace :docker do
   task :run_shared_containers do
     on roles(:all) do |host|
       invoke "docker:update"
-      execute "/opt/bin/docker-compose -p #{fetch(:project)} -f #{fetch(:compose_file_path)} up -d"
+      execute "/usr/local/bin/docker-compose -p #{fetch(:project)} -f #{fetch(:compose_file_path)} up -d"
     end
   end
 
@@ -100,7 +100,7 @@ namespace :docker do
       # TODO: Get containers shared network address or get address dynamically
       #execute "etcdctl set /vulcand/backends/#{commit_hash}/servers/srv1 '{\"URL\": \"http://10.1.42.1:#{inspected_address.split(':').last}\"}'"
       execute "curl -s -L 'http://0.0.0.0:4441/v2/keys/vulcand/backends/#{commit_hash}/servers/srv1' \
-        -XPUT -d value='{\"URL\": \"http://10.1.42.1:#{inspected_address.split(':').last}\"}'"
+        -XPUT -d value='{\"URL\": \"http://172.17.42.1:#{inspected_address.split(':').last}\"}'"
 
       # Get HTTP status code of container and wait until the container is ready
       while capture("curl -LI http://#{inspected_address} -o /dev/null -w '%{http_code}' -s | cat") == '000'
