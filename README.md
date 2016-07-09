@@ -87,7 +87,7 @@ docker-compose up
 
 For development environment, you can use `docker-compose-development.yml` on your local machine.
 
-It is bassically same as `docker-compose.yml` for staging or production environment but it shares your local Rails project with web container with using same image as staging/production.
+It is basically same as `docker-compose.yml` for staging or production environment but it shares your local Rails project with web container with using same image as staging/production.
 When you update code, you can see changes for it as you run `rails server` on your local too.
 
 This is `docker-compose-development.yml`:
@@ -120,7 +120,7 @@ data:
 
 ## Deployment
 
-**Currently, this examples does not support hot-deployment. This example has deployment task by capistrano but it needs to restart all containers when you want to update applciation.**
+**Currently, this example does not support hot-deployment. This example has deployment task by capistrano but it needs to restart all containers when you want to update application.**
 
 This is example to deploy these containers to a Ubuntu 14.04 droplet on
 [DigitalOcean](https://www.digitalocean.com/).
@@ -195,9 +195,9 @@ DEPLOY_TARGET_HOST=your.host.name bundle exec cap staging docker:deploy
   * Build Docker images
 3. deploy
   * Run Docker containers
-  * This task excutes 3 command of `docker-compose`: stop, rm and up. You don't have to care of containers running as it stops all of runnning containers.
+  * This task executes 3 commands of `docker-compose`: stop, rm and up. You don't have to care of containers running as it stops all of running containers.
 
-Building images and runnnig containers works by execute `docker-compose`.
+Building images and running containers works by execute `docker-compose`.
 See [docker-compose.yml](https://github.com/mookjp/rails-docker-example/blob/master/docker-compose.yml)
 
 #### * If you met `exit status 4` while building Docker image
